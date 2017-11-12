@@ -1,0 +1,4 @@
+- type: serial
+  service: ruby
+  steps:
+    - command: /app/.codeship/ruby-commands.sh

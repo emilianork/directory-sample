@@ -1,0 +1,17 @@
+mysql:
+  image: mysql:5.6
+  environment:
+    MYSQL_ROOT_PASSWORD: password
+
+ruby:
+  image: ruby:2.3
+  tty: true
+  command: bash -c "irb"
+  volumes:
+    - .:/app
+    - /app/log
+    - ./.codeship/env:/root/.bashrc
+  ports:
+    - 3000:3000
+  links:
+    - mysql

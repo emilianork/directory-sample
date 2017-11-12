@@ -1,0 +1,65 @@
+* App description
+
+** Models
+
+| Users      |          |            |        |             |
+|------------+----------+------------+--------+-------------|
+| Field      | Type     | Uniqueness | Length | Allow Blank |
+|------------+----------+------------+--------+-------------|
+| id         | integer  | true       |        |             |
+| first_name | string   |            |  2..50 | true        |
+| last_name  | string   |            |  2..50 | true        |
+| email      | string   |            | 1..250 |             |
+| created_at | datetime |            |        |             |
+| updated_at | datetime |            |        |             |
+
+
+| Contacts   |           |            |        |             |                               |
+|------------+-----------+------------+--------+-------------+-------------------------------|
+| Field      | Type      | Uniqueness | Length | Allow Blank | Regex                         |
+|------------+-----------+------------+--------+-------------+-------------------------------|
+| id         | integer   | true       |        |             |                               |
+| user_id    | reference |            |        |             |                               |
+| first_name | string    |            |  2..50 |             |                               |
+| last_name  | string    |            |  2..50 | true        |                               |
+| address    | string    |            | 5..250 | true        |                               |
+| phone      | string    |            |        |             | String with at least 8 digits |
+
+
+* Requerimients list implemented
+
+- A user can sign up using its email and password, without being verified this user is now ready two have its own contact list.
+- A user can update its first_name and last_name.
+
+- The user can get its own contacts list but paginated.
+- The user can edit, create, view and delete only its own contacts.
+
+- The user cannot see nor manipulate anothers user contact list.
+
+
+** Controllers
+
+*** ProfilesController
+
+This controller is responsable for updating the users profile (first_name and last_name)
+
+| Endpoint   | Action | Method | Params example                                     | Response example                                                                                                                                                                   |
+|------------+--------+--------+----------------------------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| '/profile' | update | put    | {"first_name": "Sally", "last_name": "Macejkovic"} | {"id"=>2, "first_name"=>"Sally", "last_name"=>"Macejkovic", "email"=>"tamia_little@emard.org", "created_at"=>"2017-11-12T21:58:57.000Z", "updated_at"=>"2017-11-12T21:58:58.000Z"} |
+
+
+*** Contacts
+
+This controller is responsable for manage the users contacts lists (only its own contact list)
+
+| Endpoint        | Action | Method | Params example                                          | Response example                                                                                                                                                                                                                                            |
+|-----------------+--------+--------+---------------------------------------------------------+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| '/contacts'     | index  | get    | { "page": 0}                                            | [{"id"=>1, "first_name"=>"Marcus", "last_name"=>"Schoen", "phone"=>"663.073.0872 x200", "address"=>"90810 Dustin Heights, South Urbanburgh, 75881-5657", "user_id"=>1, "created_at"=>"2017-11-12T22:03:09.000Z", "updated_at"=>"2017-11-12T22:03:09.000Z"}] |
+| '/contacts/:id' | show   | get    |                                                         | {"id"=>20, "first_name"=>"Brandon", "last_name"=>"Lubowitz", "phone"=>"878-378-6199", "address"=>"6548 Pfeffer Street, Port Travishaven, 20603", "user_id"=>1, "created_at"=>"2017-11-12T22:03:09.000Z", "updated_at"=>"2017-11-12T22:03:09.000Z"}          |
+| '/contacts/:id' | update | put    | { "first_name": "new name'}                             | {"id"=>1, "first_name"=>"New name",.. }                                                                                                                                                                                                                     |
+| '/contacts/:id' | create | post   | { "first_name": "New contact", "phone": "55 5555-5555"} | {"id"=>1, "first_name"=>"New contact",.. }                                                                                                                                                                                                                  |
+| '/contacts/:id' | delete | delete |                                                         | {"id"=1, "firstname"=>"Marcus"...}                                                                                                                                                                                                                          |
+
+** Auth (from [[https://github.com/lynndylanhurley/devise_token_auth][devise_token_auth gem]])
+
+The isntructions of how to register a new user can be found here [[https://github.com/lynndylanhurley/devise_token_auth#usage-tldr][actions permitted]], remember that those urls are under the namespace '/auth/', which means that '/sign_in' becomes '/auth/sign_in'
